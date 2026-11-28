@@ -180,14 +180,29 @@ def register_device(name: str) -> str:
     return key
 
 
+def client_env_lines(url: str, key: str) -> list[str]:
+    """How a device sets its two env vars: export lines for a POSIX shell profile,
+    and PowerShell lines that store them as Windows user variables (picked up by
+    every program started afterwards, VS Code included)."""
+    env = {"ANTHROPIC_BASE_URL": url, "CLAUDE_CODE_OAUTH_TOKEN": key}
+    lines = ["macOS / Linux — add to your shell profile (~/.zshrc or ~/.bashrc):", ""]
+    lines += [f"  export {name}={value}" for name, value in env.items()]
+    lines += ["", "Windows — run once in PowerShell (stored for your user; restart open",
+              "terminals and VS Code to pick them up):", ""]
+    # Single quotes: PowerShell takes the value literally, no $ expansion.
+    lines += [f"  [Environment]::SetEnvironmentVariable('{name}', '{value}', 'User')"
+              for name, value in env.items()]
+    return lines
+
+
 def cmd_add_device(args: argparse.Namespace) -> int:
     # public_url() first: it can exit (no json5), and a key stored before that
     # would never be shown.
     url = public_url()
     key = register_device(args.name)
-    print(f"device '{args.name}' registered. On that machine set:")
-    print(f"  export ANTHROPIC_BASE_URL={url}")
-    print(f"  export CLAUDE_CODE_OAUTH_TOKEN={key}")
+    print(f"device '{args.name}' registered. On that machine set the two env vars.")
+    print()
+    print("\n".join(client_env_lines(url, key)))
     return 0
 
 
@@ -226,10 +241,7 @@ def cmd_onboard(args: argparse.Namespace) -> int:
     print(f"──── paste this back to {user} ────────────────────────────────")
     print(f"Hi {user} — your Claude access for '{dev}' is ready.")
     print()
-    print("Add these two lines to your shell profile (~/.zshrc or ~/.bashrc):")
-    print()
-    print(f"  export ANTHROPIC_BASE_URL={url}")
-    print(f"  export CLAUDE_CODE_OAUTH_TOKEN={key}")
+    print("\n".join(client_env_lines(url, key)))
     print()
     print("Open a new terminal and run 'claude' as usual — no login needed.")
     print(f"Usage dashboard: {url}/rotate/panel?key={key}")

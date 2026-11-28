@@ -174,6 +174,16 @@ export ANTHROPIC_BASE_URL=http://<server>:8484
 export CLAUDE_CODE_OAUTH_TOKEN=<device key printed by add-device>
 ```
 
+On Windows, `add-device` also prints the PowerShell lines that store both as
+user environment variables:
+
+```powershell
+[Environment]::SetEnvironmentVariable('ANTHROPIC_BASE_URL', 'http://<server>:8484', 'User')
+[Environment]::SetEnvironmentVariable('CLAUDE_CODE_OAUTH_TOKEN', '<device key>', 'User')
+```
+
+Programs started afterwards see them — restart open terminals and VS Code.
+
 Run `claude` as usual. When account 1's 5-hour window fills, the next request
 rides account 2. Use a VPN/overlay like Tailscale between devices and server —
 the proxy speaks plain HTTP and device keys are bearer secrets. See
