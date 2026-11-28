@@ -10,9 +10,11 @@ Send the admin two things:
 2. **a device name** for the machine you'll use (e.g. `laptop`, `desktop`,
    `gpu-box` — one request per machine)
 
-You'll get back two `export` lines. Put them in your shell profile
-(`~/.zshrc` / `~/.bashrc`), open a new terminal, run `claude` — no Anthropic
-login needed. Your usage dashboard link comes with the reply.
+You'll get back two `export` lines and the same two variables as PowerShell
+lines. On macOS / Linux, put the `export` lines in your shell profile
+(`~/.zshrc` / `~/.bashrc`); on Windows, run the PowerShell lines once (they
+store user environment variables). Then open a new terminal, run `claude` — no
+Anthropic login needed. Your usage dashboard link comes with the reply.
 
 Rules of the road:
 
